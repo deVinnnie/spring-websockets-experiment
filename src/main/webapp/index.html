@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Web Sockets</title>
+</head>
+<body>
+<h1>My Web Sockets Example</h1>
+
+<form>
+    <input type="text" id="message"/>
+    <input type="button" id="button" value="Send message"/>
+</form>
+
+<div id="log"></div>
+
+<script>
+    var btn = document.getElementById("button");
+    var log = document.getElementById("log");
+    var msg = document.getElementById("message");
+    var ws = new WebSocket("ws://localhost:8080/myHandler");
+    ws.addEventListener('open', function(e) {
+        document.body.style.backgroundColor = "green";
+
+        ws.addEventListener('message', function(e) {
+            log.innerHTML += "<div>" + e.data + "</div>";
+        });
+
+        btn.addEventListener('click', function(e) {
+            console.log("Sending message " + msg.value);
+            ws.send(msg.value);
+        });
+    });
+    ws.addEventListener('error', function(e) {
+        document.body.style.backgroundColor = "red";
+        console.log(e);
+    });
+</script>
+</body>
+</html>
