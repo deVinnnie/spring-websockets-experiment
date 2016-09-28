@@ -42,12 +42,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             session.close();
         }
         else {
-            for(WebSocketSession aSession : sessions) {
-                if(aSession.isOpen()) { // Not a complete solution.
-                                        // Thread may be suspended after this call and then the session may be closed.
-                    aSession.sendMessage(new TextMessage(message.getPayload()));
-                }
-            }
+            this.sendMessageToSockets(message.getPayload());
         }
     }
 
@@ -57,5 +52,18 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         logger.info("Closing Connection!");
         sessions.remove(session);
         logger.info("Number of connections: " + sessions.size());
+    }
+
+
+    public void sendMessageToSockets(String message) throws IOException {
+        for(WebSocketSession aSession : sessions) {
+            if(aSession.isOpen()) {
+                // Not a complete solution.
+                // Thread may be suspended after this call and then the session may be closed.
+
+                aSession.sendMessage(new TextMessage(message));
+            }
+        }
+
     }
 }
